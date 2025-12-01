@@ -23,3 +23,32 @@ export const addEmotion = async (req, res) => {
     return res.status(500).json({ message: "Failed to add emotion" });
   }
 };
+
+export const getCurrentEmotions = async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
+
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
+
+    const currentEmotions = await prisma.emotion.findMany({
+      where: {
+        userId: userId,
+        createdAt: {
+          gte: startOfDay,
+          lte: endOfDay,
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    return res.status(200).json({ data: currentEmotions });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error fetching current emotions" });
+  }
+};
