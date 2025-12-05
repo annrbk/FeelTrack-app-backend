@@ -52,3 +52,19 @@ export const getCurrentEmotions = async (req, res) => {
     return res.status(500).json({ message: "Error fetching current emotions" });
   }
 };
+
+export const deleteEmotion = async (req, res) => {
+  const emotionId = req.params.id;
+
+  try {
+    await prisma.emotion.delete({
+      where: {
+        id: Number(emotionId),
+      },
+    });
+    return res.status(200).json({ message: "Emotion deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error deleting emotion" });
+  }
+};
