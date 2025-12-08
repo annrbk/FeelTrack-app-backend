@@ -26,12 +26,13 @@ export const addEmotion = async (req, res) => {
 
 export const getCurrentEmotions = async (req, res) => {
   const userId = req.user.id;
+  const date = req.query.date;
 
   try {
-    const startOfDay = new Date();
+    const startOfDay = new Date(date);
     startOfDay.setHours(0, 0, 0, 0);
 
-    const endOfDay = new Date();
+    const endOfDay = new Date(date);
     endOfDay.setHours(23, 59, 59, 999);
 
     const currentEmotions = await prisma.emotion.findMany({
